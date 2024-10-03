@@ -53,6 +53,7 @@ describe('Projects', () => {
   it('removes files in a project', () => {
     fs.writeFileSync(path.join(tmpDir, 'my-project', 'f1.txt'), 'content1');
     execSync('git add f1.txt', { cwd: path.join(tmpDir, 'my-project') });
+    execSync('git commit -m file', { cwd: path.join(tmpDir, 'my-project') });
     projects.remove('my-project', 'f1.txt');
     expect(fs.existsSync(path.join(tmpDir, 'my-project', 'f1.txt'))).to.be.false;
   });
