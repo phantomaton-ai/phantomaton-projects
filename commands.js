@@ -7,7 +7,7 @@ import {
   moveProjectFile,
   removeProjectFile,
   testProject,
-} from '../phantomaton-ai/src/projects.js';
+} from './projects.js';
 
 const commands = [
   {
