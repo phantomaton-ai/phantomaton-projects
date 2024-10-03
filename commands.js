@@ -11,7 +11,7 @@ import {
 
 const commands = [
   {
-    name: 'listProjects',
+    name: 'list',
     validate: (attributes, body) => true,
     execute: (attributes, body) => listProjects(),
     example: {
@@ -21,7 +21,7 @@ const commands = [
     description: 'Lists all available projects.'
   },
   {
-    name: 'createProject',
+    name: 'initialize',
     validate: ({ project }) => typeof project === 'string',
     execute: ({ project }) => createProject(project),
     example: {
@@ -31,7 +31,7 @@ const commands = [
     description: 'Creates a new project with the specified name.'
   },
   {
-    name: 'listProjectFiles',
+    name: 'files',
     validate: ({ project }) => typeof project === 'string',
     execute: ({ project }) => listProjectFiles(project),
     example: {
@@ -41,7 +41,7 @@ const commands = [
     description: 'Lists all files in the specified project.'
   },
   {
-    name: 'readProjectFile',
+    name: 'read',
     validate: ({ project, file }) => typeof project === 'string' && typeof file === 'string',
     execute: ({ project, file }) => readProjectFile(project, file),
     example: {
@@ -51,7 +51,7 @@ const commands = [
     description: 'Reads the contents of the specified file in the specified project.'
   },
   {
-    name: 'writeProjectFile',
+    name: 'write',
     validate: ({ project, file }, content) => typeof project === 'string' && typeof file === 'string' && typeof content === 'string',
     execute: ({ project, file }, content) => writeProjectFile(project, file, content),
     example: {
@@ -61,7 +61,7 @@ const commands = [
     description: 'Writes the provided content to the specified file in the specified project.'
   },
   {
-    name: 'moveProjectFile',
+    name: 'move',
     validate: ({ project, file, to }) => typeof project === 'string' && typeof file === 'string' && typeof to === 'string',
     execute: ({ project, file, to }) => moveProjectFile(project, file, to),
     example: {
@@ -71,7 +71,7 @@ const commands = [
     description: 'Moves the specified file in the specified project to a new name.'
   },
   {
-    name: 'removeProjectFile',
+    name: 'remove',
     validate: ({ project, file }) => typeof project === 'string' && typeof file === 'string',
     execute: ({ project, file }) => removeProjectFile(project, file),
     example: {
@@ -81,7 +81,7 @@ const commands = [
     description: 'Removes the specified file from the specified project.'
   },
   {
-    name: 'testProject',
+    name: 'test',
     validate: ({ project }) => typeof project === 'string',
     execute: ({ project }) => testProject(project),
     example: {
