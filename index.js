@@ -1,8 +1,3 @@
-import gallows from 'gallows';
-import createCommands from './commands.js';
+import commands from './commands.js';
 
-export default function phantomatonProjects(options = {}) {
-  return {
-    commands: gallows(createCommands(options))
-  };
-}
+export default (options = {}) => ({ commands: commands(options) });
