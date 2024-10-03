@@ -1,13 +1,13 @@
-import createProjects from './projects.js';
+import projects from './projects.js';
 
 export default function commands(options = {}) {
-  const projects = createProjects(options);
+  const api = projects(options);
 
   return [
     {
       name: 'list',
       validate: (attributes, body) => true,
-      execute: (attributes, body) => projects.list(),
+      execute: (attributes, body) => api.list(),
       example: {
         attributes: {},
         body: ''
@@ -17,7 +17,7 @@ export default function commands(options = {}) {
     {
       name: 'initialize',
       validate: ({ project }) => typeof project === 'string',
-      execute: ({ project }) => projects.initialize(project),
+      execute: ({ project }) => api.initialize(project),
       example: {
         attributes: { project: 'my-project' },
         body: ''
@@ -27,7 +27,7 @@ export default function commands(options = {}) {
     {
       name: 'files',
       validate: ({ project }) => typeof project === 'string',
-      execute: ({ project }) => projects.files(project),
+      execute: ({ project }) => api.files(project),
       example: {
         attributes: { project: 'my-project' },
         body: ''
@@ -37,7 +37,7 @@ export default function commands(options = {}) {
     {
       name: 'read',
       validate: ({ project, file }) => typeof project === 'string' && typeof file === 'string',
-      execute: ({ project, file }) => projects.read(project, file),
+      execute: ({ project, file }) => api.read(project, file),
       example: {
         attributes: { project: 'my-project', file: 'example.txt' },
         body: ''
@@ -47,7 +47,7 @@ export default function commands(options = {}) {
     {
       name: 'write',
       validate: ({ project, file }, content) => typeof project === 'string' && typeof file === 'string' && typeof content === 'string',
-      execute: ({ project, file }, content) => projects.write(project, file, content),
+      execute: ({ project, file }, content) => api.write(project, file, content),
       example: {
         attributes: { project: 'my-project', file: 'example.txt' },
         body: 'This is the content of the example.txt file.'
@@ -57,7 +57,7 @@ export default function commands(options = {}) {
     {
       name: 'move',
       validate: ({ project, file, to }) => typeof project === 'string' && typeof file === 'string' && typeof to === 'string',
-      execute: ({ project, file, to }) => projects.move(project, file, to),
+      execute: ({ project, file, to }) => api.move(project, file, to),
       example: {
         attributes: { project: 'my-project', file: 'example.txt', to: 'new-example.txt' },
         body: ''
@@ -67,7 +67,7 @@ export default function commands(options = {}) {
     {
       name: 'remove',
       validate: ({ project, file }) => typeof project === 'string' && typeof file === 'string',
-      execute: ({ project, file }) => projects.remove(project, file),
+      execute: ({ project, file }) => api.remove(project, file),
       example: {
         attributes: { project: 'my-project', file: 'example.txt' },
         body: ''
@@ -77,7 +77,7 @@ export default function commands(options = {}) {
     {
       name: 'test',
       validate: ({ project }) => typeof project === 'string',
-      execute: ({ project }) => projects.test(project),
+      execute: ({ project }) => api.test(project),
       example: {
         attributes: { project: 'my-project' },
         body: ''
