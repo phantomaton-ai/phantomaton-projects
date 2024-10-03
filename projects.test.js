@@ -43,16 +43,18 @@ describe('Projects', () => {
   });
 
   it('moves files in a project', () => {
-    fs.writeFileSync(path.join(tmpDir, 'my-project', 'file1.txt'), 'content1');
-    projects.move('my-project', 'file1.txt', 'file2.txt');
-    expect(fs.existsSync(path.join(tmpDir, 'my-project', 'file1.txt'))).to.be.false;
-    expect(fs.existsSync(path.join(tmpDir, 'my-project', 'file2.txt'))).to.be.true;
+    fs.writeFileSync(path.join(tmpDir, 'my-project', 'f1.txt'), 'content1');
+    execSync('git add f1.txt', { cwd: path.join(tmpDir, 'my-project') });
+    projects.move('my-project', 'f1.txt', 'f2.txt');
+    expect(fs.existsSync(path.join(tmpDir, 'my-project', 'f1.txt'))).to.be.false;
+    expect(fs.existsSync(path.join(tmpDir, 'my-project', 'f2.txt'))).to.be.true;
   });
 
   it('removes files in a project', () => {
-    fs.writeFileSync(path.join(tmpDir, 'my-project', 'file1.txt'), 'content1');
-    projects.remove('my-project', 'file1.txt');
-    expect(fs.existsSync(path.join(tmpDir, 'my-project', 'file1.txt'))).to.be.false;
+    fs.writeFileSync(path.join(tmpDir, 'my-project', 'f1.txt'), 'content1');
+    execSync('git add f1.txt', { cwd: path.join(tmpDir, 'my-project') });
+    projects.remove('my-project', 'f1.txt');
+    expect(fs.existsSync(path.join(tmpDir, 'my-project', 'f1.txt'))).to.be.false;
   });
 
   it('tests a project', () => {
