@@ -12,86 +12,84 @@ import {
 const commands = [
   {
     name: 'listProjects',
-    command: listProjects,
-    example: {},
+    validate: (attributes, body) => true,
+    execute: (attributes, body) => listProjects(),
+    example: {
+      attributes: {},
+      body: ''
+    },
     description: 'Lists all available projects.'
   },
   {
     name: 'createProject',
-    command: ({ project }) => createProject(project),
+    validate: ({ project }) => typeof project === 'string',
+    execute: ({ project }) => createProject(project),
     example: {
-      options: {
-        project: 'my-project'
-      }
+      attributes: { project: 'my-project' },
+      body: ''
     },
     description: 'Creates a new project with the specified name.'
   },
   {
     name: 'listProjectFiles',
-    command: ({ project }) => listProjectFiles(project),
+    validate: ({ project }) => typeof project === 'string',
+    execute: ({ project }) => listProjectFiles(project),
     example: {
-      options: {
-        project: 'my-project'
-      }
+      attributes: { project: 'my-project' },
+      body: ''
     },
     description: 'Lists all files in the specified project.'
   },
   {
     name: 'readProjectFile',
-    command: ({ project, file }) => readProjectFile(project, file),
+    validate: ({ project, file }) => typeof project === 'string' && typeof file === 'string',
+    execute: ({ project, file }) => readProjectFile(project, file),
     example: {
-      options: {
-        project: 'my-project',
-        file: 'example.txt'
-      }
+      attributes: { project: 'my-project', file: 'example.txt' },
+      body: ''
     },
     description: 'Reads the contents of the specified file in the specified project.'
   },
   {
     name: 'writeProjectFile',
-    command: ({ project, file }, content) => writeProjectFile(project, file, content),
+    validate: ({ project, file }, content) => typeof project === 'string' && typeof file === 'string' && typeof content === 'string',
+    execute: ({ project, file }, content) => writeProjectFile(project, file, content),
     example: {
-      options: {
-        project: 'my-project',
-        file: 'example.txt'
-      },
+      attributes: { project: 'my-project', file: 'example.txt' },
       body: 'This is the content of the example.txt file.'
     },
     description: 'Writes the provided content to the specified file in the specified project.'
   },
   {
     name: 'moveProjectFile',
-    command: ({ project, file, to }) => moveProjectFile(project, file, to),
+    validate: ({ project, file, to }) => typeof project === 'string' && typeof file === 'string' && typeof to === 'string',
+    execute: ({ project, file, to }) => moveProjectFile(project, file, to),
     example: {
-      options: {
-        project: 'my-project',
-        file: 'example.txt',
-        to: 'new-example.txt'
-      }
+      attributes: { project: 'my-project', file: 'example.txt', to: 'new-example.txt' },
+      body: ''
     },
     description: 'Moves the specified file in the specified project to a new name.'
   },
   {
     name: 'removeProjectFile',
-    command: ({ project, file }) => removeProjectFile(project, file),
+    validate: ({ project, file }) => typeof project === 'string' && typeof file === 'string',
+    execute: ({ project, file }) => removeProjectFile(project, file),
     example: {
-      options: {
-        project: 'my-project',
-        file: 'example.txt'
-      }
+      attributes: { project: 'my-project', file: 'example.txt' },
+      body: ''
     },
     description: 'Removes the specified file from the specified project.'
   },
   {
     name: 'testProject',
-    command: ({ project }) => testProject(project),
+    validate: ({ project }) => typeof project === 'string',
+    execute: ({ project }) => testProject(project),
     example: {
-      options: {
-        project: 'my-project'
-      }
+      attributes: { project: 'my-project' },
+      body: ''
     },
     description: 'Tests the specified project by running any available tests.'
   }
 ];
 
-export { commands, commandMap };
+export { commands };
