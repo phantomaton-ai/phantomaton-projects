@@ -15,10 +15,6 @@ describe('Projects', () => {
     execSync('git init', { cwd });
   });
 
-  afterEach(() => {
-    fs.rmSync(tmpDir, { recursive: true, force: true });
-  });
-
   it('lists projects', () => {
     fs.mkdirSync(path.join(tmpDir, 'project1'));
     fs.mkdirSync(path.join(tmpDir, 'project2'));
