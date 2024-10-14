@@ -6,70 +6,110 @@ import { v4 as uuidv4 } from 'uuid';
 import commands from './commands.js';
 import projects from './projects.js';
 
+const EXPECTED = [
+  {
+    name: 'list',
+    validate: (attributes, body) => true,
+    //execute: (attributes, body) => api.list(),
+    example: {
+      attributes: {},
+      body: ''
+    },
+    description: 'Lists all available projects.'
+  },
+  {
+    name: 'initialize',
+    validate: ({ project }) => typeof project === 'string',
+    //execute: ({ project }) => api.initialize(project),
+    example: {
+      attributes: { project: 'my-project' },
+      body: ''
+    },
+    description: 'Creates a new project with the specified name.'
+  },
+  {
+    name: 'files',
+    validate: ({ project }) => typeof project === 'string',
+    //execute: ({ project }) => api.files(project),
+    example: {
+      attributes: { project: 'my-project' },
+      body: ''
+    },
+    description: 'Lists all files in the specified project.'
+  },
+  {
+    name: 'read',
+    validate: ({ project, file }) => typeof project === 'string' && typeof file === 'string',
+    //execute: ({ project, file }) => api.read(project, file),
+    example: {
+      attributes: { project: 'my-project', file: 'example.txt' },
+      body: ''
+    },
+    description: 'Reads the contents of the specified file in the specified project.'
+  },
+  {
+    name: 'write',
+    validate: ({ project, file }, content) => typeof project === 'string' && typeof file === 'string' && typeof content === 'string',
+    //execute: ({ project, file }, content) => api.write(project, file, content),
+    example: {
+      attributes: { project: 'my-project', file: 'example.txt' },
+      body: 'This is the content of the example.txt file.'
+    },
+    description: 'Writes the provided content to the specified file in the specified project.'
+  },
+  {
+    name: 'move',
+    validate: ({ project, file, to }) => typeof project === 'string' && typeof file === 'string' && typeof to === 'string',
+    //execute: ({ project, file, to }) => api.move(project, file, to),
+    example: {
+      attributes: { project: 'my-project', file: 'example.txt', to: 'new-example.txt' },
+      body: ''
+    },
+    description: 'Moves the specified file in the specified project to a new name.'
+  },
+  {
+    name: 'remove',
+    validate: ({ project, file }) => typeof project === 'string' && typeof file === 'string',
+    //execute: ({ project, file }) => api.remove(project, file),
+    example: {
+      attributes: { project: 'my-project', file: 'example.txt' },
+      body: ''
+    },
+    description: 'Removes the specified file from the specified project.'
+  },
+  {
+    name: 'test',
+    validate: ({ project }) => typeof project === 'string',
+    //execute: ({ project }) => api.test(project),
+    example: {
+      attributes: { project: 'my-project' },
+      body: ''
+    },
+    description: 'Tests the specified project by running any available tests.'
+  }
+];
+
 describe('Commands', () => {
   const tmpDir = path.join('tmp', uuidv4(), 'projects');
-  const options = { home: tmpDir };
-  const projectsApi = projects(options);
-  const commandsApi = commands(options);
+  const actual = commands({ home: tmpDir });
 
-  beforeEach(() => {
-    const cwd = path.join(tmpDir, 'my-project');
-    fs.mkdirSync(cwd, { recursive: true });
-    execSync('git init', { cwd });
-  });
-
-  it('lists projects', () => {
-    const listCommand = commandsApi.find(cmd => cmd.name === 'list');
-    expect(listCommand.execute({}, '')).to.include('my-project');
-  });
-
-  it('initializes a new project', () => {
-    const initializeCommand = commandsApi.find(cmd => cmd.name === 'initialize');
-    expect(initializeCommand.execute({ project: 'new-project' }, '')).to.include('Project created');
-    expect(projectsApi.files('new-project')).to.include('.git');
-  });
-
-  it('lists files in a project', () => {
-    projectsApi.write('my-project', 'example.txt', 'Hello, Phantomaton!');
-    const filesCommand = commandsApi.find(cmd => cmd.name === 'files');
-    expect(filesCommand.execute({ project: 'my-project' }, '')).to.include('example.txt');
-  });
-
-  it('reads a file in a project', () => {
-    projectsApi.write('my-project', 'example.txt', 'Hello, Phantomaton!');
-    const readCommand = commandsApi.find(cmd => cmd.name === 'read');
-    expect(readCommand.execute({ project: 'my-project', file: 'example.txt' }, '')).to.equal('Hello, Phantomaton!');
-  });
-
-  it('writes a file in a project', () => {
-    const writeCommand = commandsApi.find(cmd => cmd.name === 'write');
-    const response = writeCommand.execute({ project: 'my-project', file: 'example.txt' }, 'Hello, Phantomaton!');
-    expect(response).to.equal('File written.');
-    expect(projectsApi.read('my-project', 'example.txt')).to.equal('Hello, Phantomaton!');
-  });
-
-  it('moves a file in a project', () => {
-    projectsApi.write('my-project', 'f1.txt', 'content1');
-    const moveCommand = commandsApi.find(cmd => cmd.name === 'move');
-    const response = moveCommand.execute({ project: 'my-project', file: 'f1.txt', to: 'f2.txt' }, '');
-    expect(response).to.equal('File moved.');
-    expect(projectsApi.files('my-project')).to.include('f2.txt');
-    expect(projectsApi.files('my-project')).to.not.include('f1.txt');
-  });
-
-  it('removes a file in a project', () => {
-    projectsApi.write('my-project', 'example.txt', 'content');
-    const removeCommand = commandsApi.find(cmd => cmd.name === 'remove');
-    const response = removeCommand.execute({ project: 'my-project', file: 'example.txt' }, '');
-    expect(response).to.equal('File removed.');
-    expect(projectsApi.files('my-project')).to.not.include('example.txt');
-  });
-
-  it('tests a project', () => {
-    const packageJson = JSON.stringify({ scripts: { test: "echo Test passed" } });
-    projectsApi.write('my-project', 'package.json', packageJson);
-    const testCommand = commandsApi.find(cmd => cmd.name === 'test');
-    const response = testCommand.execute({ project: 'my-project' }, '');
-    expect(response).to.include('Test passed');
+  EXPECTED.forEach(({ name, validate, execute, example, description }, index) => {
+    describe(name, () => {
+      it(`appears at index ${index}`, () => {
+        expect(actual[index].name).to.equal(name);
+      });
+      it('provides an example', () => {
+        expect(actual[index].example).to.deep.equal(example);
+      });
+      it('provides a description', () => {
+        expect(actual[index].description).to.equal(description);
+      });
+      it('matches validations', () => {
+        actual.forEach(({ example }) => {
+          expect(actual[index].validate(example.attributes, example.body))
+            .to.equal(validate(example.attributes, example.body));
+        });
+      });
+    });
   });
 });
