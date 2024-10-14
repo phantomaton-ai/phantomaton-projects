@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "mocha **/*.test.js"
+    "cov": "c8 -x '*.test.*' -r html --check-coverage --lines 100 npm test",
+    "test": "mocha --ignore 'node_modules/**/*' **/*.test.js"
   },
   "keywords": [],
   "author": "",
@@ -11,6 +12,7 @@
   "description": "",
   "type": "module",
   "devDependencies": {
+    "c8": "^10.1.2",
     "chai": "^5.1.1",
     "mocha": "^10.7.3"
   }
