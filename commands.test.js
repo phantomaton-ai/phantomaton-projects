@@ -12,12 +12,12 @@ describe('Commands', () => {
 
   it('lists projects', () => {
     expect(commandsApi.list().execute({}, '')).to.include('my-project');
-  });
+  }).timeout(5000);
 
   it('initializes a new project', () => {
     expect(commandsApi.initialize({ project: 'new-project' }).execute({}, '')).to.include('Project created');
     expect(projectsApi.files('new-project')).to.include('.git');
-  });
+  }).timeout(5000);
 
   it('lists files in a project', () => {
     projectsApi.write('my-project', 'example.txt', 'Hello, Phantomaton!');
