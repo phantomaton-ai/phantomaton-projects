@@ -1,13 +1,21 @@
 import { expect } from 'chai';
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 import commands from './commands.js';
 import projects from './projects.js';
 
 describe('Commands', () => {
-  const projectsApi = projects({ home: 'tmp/projects' });
-  const commandsApi = commands({ projectsApi });
+  const tmpDir = path.join('tmp', uuidv4(), 'projects');
+  const options = { home: tmpDir };
+  const projectsApi = projects(options);
+  const commandsApi = commands(options);
 
   beforeEach(() => {
-    projectsApi.initialize('my-project');
+    const cwd = path.join(tmpDir, 'my-project');
+    fs.mkdirSync(cwd, { recursive: true });
+    execSync('git init', { cwd });
   });
 
   it('lists projects', () => {
