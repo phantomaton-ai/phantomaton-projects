@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
+import chp from 'child_process';
 
 const DEFAULT_PROJECT_DIR = 'data/projects';
 
@@ -45,7 +45,7 @@ class Projects {
         ...['node_modules'].map(file => `echo ${file} >> .gitignore`),
         'git add .gitignore package.json package-lock.json',
         'git commit -m "Updated by Phantomaton"'
-      ].map(command => execSync(command, options));
+      ].map(command => chp.execSync(command, options));
       return [...outputs, 'Project created.'].join('\n\n');
     } catch (error) {
       return `Error creating project: ${error}`;
@@ -94,8 +94,8 @@ class Projects {
     const filePath = path.join(projectPath, file);
     fs.writeFileSync(filePath, content);
     try {
-      execSync(`git -C ${projectPath} add ${file}`);
-      execSync(`git -C ${projectPath} commit -m "Updated by Phantomaton"`);
+      chp.execSync(`git -C ${projectPath} add ${file}`);
+      chp.execSync(`git -C ${projectPath} commit -m "Updated by Phantomaton"`);
     } catch (error) {
       return `Error committing file: ${error}`;
     }
@@ -116,8 +116,8 @@ class Projects {
     const sourceFilePath = path.join(projectPath, sourceFileName);
     const destinationFilePath = path.join(projectPath, destinationFileName);
     try {
-      execSync(`git -C ${projectPath} mv ${sourceFileName} ${destinationFileName}`);
-      execSync(`git -C ${projectPath} commit -m "Moved file by Phantomaton"`);
+      chp.execSync(`git -C ${projectPath} mv ${sourceFileName} ${destinationFileName}`);
+      chp.execSync(`git -C ${projectPath} commit -m "Moved file by Phantomaton"`);
     } catch (error) {
       return `Error moving file: ${error}`;
     }
@@ -136,8 +136,8 @@ class Projects {
     const projectPath = path.join(this.home, project);
     const filePath = path.join(projectPath, file);
     try {
-      execSync(`git -C ${projectPath} rm ${file}`);
-      execSync(`git -C ${projectPath} commit -m "Removed file by Phantomaton"`);
+      chp.execSync(`git -C ${projectPath} rm ${file}`);
+      chp.execSync(`git -C ${projectPath} commit -m "Removed file by Phantomaton"`);
     } catch (error) {
       return `Error removing file: ${error}`;
     }
@@ -154,7 +154,7 @@ class Projects {
   test(project) {
     const projectPath = path.join(this.home, project);
     try {
-      const output = execSync(`npm test`, { cwd: projectPath, stdio: 'pipe' });
+      const output = chp.execSync(`npm test`, { cwd: projectPath, stdio: 'pipe' });
       return `NPM test completed:\n${output.toString()}`;
     } catch (error) {
       return `Error running NPM test:\n${error.stdout.toString()}\n${error.stderr.toString()}`;
