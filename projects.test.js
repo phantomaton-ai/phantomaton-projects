@@ -1,6 +1,6 @@
-import { expect } from 'lovecraft';
+import { expect, stub } from 'lovecraft';
 import path from 'path';
-import { execSync } from 'child_process';
+import chp from 'child_process';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import Projects from './projects.js';
@@ -12,7 +12,7 @@ describe('Projects', () => {
   beforeEach(() => {
     const cwd = path.join(tmpDir, 'my-project');
     fs.mkdirSync(cwd, { recursive: true });
-    execSync('git init', { cwd });
+    chp.execSync('git init', { cwd });
   });
 
   it('lists projects', () => {
@@ -44,7 +44,7 @@ describe('Projects', () => {
 
   it('moves files in a project', () => {
     fs.writeFileSync(path.join(tmpDir, 'my-project', 'f1.txt'), 'content1');
-    execSync('git add f1.txt', { cwd: path.join(tmpDir, 'my-project') });
+    chp.execSync('git add f1.txt', { cwd: path.join(tmpDir, 'my-project') });
     projects.move('my-project', 'f1.txt', 'f2.txt');
     expect(fs.existsSync(path.join(tmpDir, 'my-project', 'f1.txt'))).to.be.false;
     expect(fs.existsSync(path.join(tmpDir, 'my-project', 'f2.txt'))).to.be.true;
@@ -52,8 +52,8 @@ describe('Projects', () => {
 
   it('removes files in a project', () => {
     fs.writeFileSync(path.join(tmpDir, 'my-project', 'f1.txt'), 'content1');
-    execSync('git add f1.txt', { cwd: path.join(tmpDir, 'my-project') });
-    execSync('git commit -m file', { cwd: path.join(tmpDir, 'my-project') });
+    chp.execSync('git add f1.txt', { cwd: path.join(tmpDir, 'my-project') });
+    chp.execSync('git commit -m file', { cwd: path.join(tmpDir, 'my-project') });
     projects.remove('my-project', 'f1.txt');
     expect(fs.existsSync(path.join(tmpDir, 'my-project', 'f1.txt'))).to.be.false;
   });
@@ -62,5 +62,24 @@ describe('Projects', () => {
     const packageJson = JSON.stringify({ scripts: { test: "echo Test passed" } });
     fs.writeFileSync(path.join(tmpDir, 'my-project', 'package.json'), packageJson);
     expect(projects.test('my-project')).to.include('Test passed');
+  });
+
+  describe('error-handling', () => {
+    const stubbers =
+      ['readFileSync', 'writeFileSync', 'readdirSync', 'mkdirSync'];
+
+    beforeEach(() => {
+      stub(chp, 'execSync').throws();
+      stubbers.forEach(stubber => stub(fs, stubber).throws());
+    });
+
+    afterEach(() => {
+      chp.execSync.reset();
+      stubbers.forEach(stubber => fs[stubber].reset());
+    });
+
+    it('handles errors in list calls', () => {
+      expect(projects.list).to.throw(Error);
+    });
   });
 });
