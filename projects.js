@@ -89,12 +89,8 @@ class Projects {
     const projectPath = path.join(this.home, project);
     const filePath = path.join(projectPath, file);
     fs.writeFileSync(filePath, content);
-    try {
-      chp.execSync(`git -C ${projectPath} add ${file}`);
-      chp.execSync(`git -C ${projectPath} commit -m "Updated by Phantomaton"`);
-    } catch (error) {
-      throw new Error(`Error committing file: ${error}`);
-    }
+    chp.execSync(`git -C ${projectPath} add ${file}`);
+    chp.execSync(`git -C ${projectPath} commit -m "Updated by Phantomaton"`);
     return 'File written.';
   }
 
@@ -111,12 +107,8 @@ class Projects {
     const projectPath = path.join(this.home, project);
     const sourceFilePath = path.join(projectPath, sourceFileName);
     const destinationFilePath = path.join(projectPath, destinationFileName);
-    try {
-      chp.execSync(`git -C ${projectPath} mv ${sourceFileName} ${destinationFileName}`);
-      chp.execSync(`git -C ${projectPath} commit -m "Moved file by Phantomaton"`);
-    } catch (error) {
-      throw new Error(`Error moving file: ${error}`);
-    }
+    chp.execSync(`git -C ${projectPath} mv ${sourceFileName} ${destinationFileName}`);
+    chp.execSync(`git -C ${projectPath} commit -m "Moved file by Phantomaton"`);
     return 'File moved.';
   }
 
@@ -131,12 +123,8 @@ class Projects {
   remove(project, file) {
     const projectPath = path.join(this.home, project);
     const filePath = path.join(projectPath, file);
-    try {
-      chp.execSync(`git -C ${projectPath} rm ${file}`);
-      chp.execSync(`git -C ${projectPath} commit -m "Removed file by Phantomaton"`);
-    } catch (error) {
-      throw new Error(`Error removing file: ${error}`);
-    }
+    chp.execSync(`git -C ${projectPath} rm ${file}`);
+    chp.execSync(`git -C ${projectPath} commit -m "Removed file by Phantomaton"`);
     return 'File removed.';
   }
 
@@ -149,12 +137,8 @@ class Projects {
    */
   test(project) {
     const projectPath = path.join(this.home, project);
-    try {
-      const output = chp.execSync(`npm test`, { cwd: projectPath, stdio: 'pipe' });
-      return `NPM test completed:\n${output.toString()}`;
-    } catch (error) {
-      throw new Error(`Error running NPM test:\n${error.stdout.toString()}\n${error.stderr.toString()}`);
-    }
+    const output = chp.execSync(`npm test`, { cwd: projectPath, stdio: 'pipe' });
+    return `NPM test completed:\n${output.toString()}`;
   }
 }
 
