@@ -64,8 +64,8 @@ describe('Projects', () => {
     expect(projects.test('my-project')).to.include('Test passed');
   });
 
-  describe('error-handling', () => {
-    const stubbers = ['readFileSync', 'writeFileSync', 'readdirSync', 'mkdirSync', 'execSync'];
+  describe('error-rethrowing', () => {
+    const stubbers = ['readFileSync', 'writeFileSync', 'readdirSync', 'mkdirSync'];
 
     beforeEach(() => {
       stubbers.forEach(stubber => stub(fs, stubber).throws());
@@ -73,8 +73,8 @@ describe('Projects', () => {
     });
 
     afterEach(() => {
-      stubbers.forEach(stubber => fs[stubber].reset());
-      chp.execSync.reset();
+      stubbers.forEach(stubber => fs[stubber].restore());
+      chp.execSync.restore();
     });
 
     it('throws errors in list calls', () => {
