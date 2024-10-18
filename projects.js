@@ -32,7 +32,6 @@ class Projects {
    */
   initialize(project) {
     const projectPath = path.join(this.home, project);
-    console.log("Creating " + projectPath);
     fs.mkdirSync(projectPath, { recursive: true });
     const options = { cwd: projectPath };
     const outputs = [
