@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'lovecraft';
 import path from 'path';
 import { execSync } from 'child_process';
 import fs from 'fs';
