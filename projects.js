@@ -34,22 +34,18 @@ class Projects {
     const projectPath = path.join(this.home, project);
     console.log("Creating " + projectPath);
     fs.mkdirSync(projectPath, { recursive: true });
-    try {
-      const options = { cwd: projectPath };
-      const outputs = [
-        'git init',
-        'git config --local user.name phantomaton',
-        'git config --local user.email 182378863+phantomaton-ai@users.noreply.github.com',
-        'npm init -y',
-        'npm i chai mocha',
-        ...['node_modules'].map(file => `echo ${file} >> .gitignore`),
-        'git add .gitignore package.json package-lock.json',
-        'git commit -m "Updated by Phantomaton"'
-      ].map(command => chp.execSync(command, options));
-      return [...outputs, 'Project created.'].join('\n\n');
-    } catch (error) {
-      return `Error creating project: ${error}`;
-    }
+    const options = { cwd: projectPath };
+    const outputs = [
+      'git init',
+      'git config --local user.name phantomaton',
+      'git config --local user.email 182378863+phantomaton-ai@users.noreply.github.com',
+      'npm init -y',
+      'npm i chai mocha',
+      ...['node_modules'].map(file => `echo ${file} >> .gitignore`),
+      'git add .gitignore package.json package-lock.json',
+      'git commit -m "Updated by Phantomaton"'
+    ].map(command => chp.execSync(command, options));
+    return [...outputs, 'Project created.'].join('\n\n');
   }
 
   /**
@@ -97,7 +93,7 @@ class Projects {
       chp.execSync(`git -C ${projectPath} add ${file}`);
       chp.execSync(`git -C ${projectPath} commit -m "Updated by Phantomaton"`);
     } catch (error) {
-      return `Error committing file: ${error}`;
+      throw new Error(`Error committing file: ${error}`);
     }
     return 'File written.';
   }
@@ -119,7 +115,7 @@ class Projects {
       chp.execSync(`git -C ${projectPath} mv ${sourceFileName} ${destinationFileName}`);
       chp.execSync(`git -C ${projectPath} commit -m "Moved file by Phantomaton"`);
     } catch (error) {
-      return `Error moving file: ${error}`;
+      throw new Error(`Error moving file: ${error}`);
     }
     return 'File moved.';
   }
@@ -139,7 +135,7 @@ class Projects {
       chp.execSync(`git -C ${projectPath} rm ${file}`);
       chp.execSync(`git -C ${projectPath} commit -m "Removed file by Phantomaton"`);
     } catch (error) {
-      return `Error removing file: ${error}`;
+      throw new Error(`Error removing file: ${error}`);
     }
     return 'File removed.';
   }
@@ -157,7 +153,7 @@ class Projects {
       const output = chp.execSync(`npm test`, { cwd: projectPath, stdio: 'pipe' });
       return `NPM test completed:\n${output.toString()}`;
     } catch (error) {
-      return `Error running NPM test:\n${error.stdout.toString()}\n${error.stderr.toString()}`;
+      throw new Error(`Error running NPM test:\n${error.stdout.toString()}\n${error.stderr.toString()}`);
     }
   }
 }
