@@ -65,21 +65,48 @@ describe('Projects', () => {
   });
 
   describe('error-handling', () => {
-    const stubbers =
-      ['readFileSync', 'writeFileSync', 'readdirSync', 'mkdirSync'];
+    const stubbers = ['readFileSync', 'writeFileSync', 'readdirSync', 'mkdirSync', 'execSync'];
 
     beforeEach(() => {
-      stub(chp, 'execSync').throws();
       stubbers.forEach(stubber => stub(fs, stubber).throws());
+      stub(chp, 'execSync').throws();
     });
 
     afterEach(() => {
-      chp.execSync.reset();
       stubbers.forEach(stubber => fs[stubber].reset());
+      chp.execSync.reset();
     });
 
-    it('handles errors in list calls', () => {
+    it('throws errors in list calls', () => {
       expect(projects.list).to.throw(Error);
+    });
+
+    it('throws errors in initialize calls', () => {
+      expect(projects.initialize).to.throw(Error);
+    });
+
+    it('throws errors in files calls', () => {
+      expect(projects.files).to.throw(Error);
+    });
+
+    it('throws errors in read calls', () => {
+      expect(projects.read).to.throw(Error);
+    });
+
+    it('throws errors in write calls', () => {
+      expect(projects.write).to.throw(Error);
+    });
+
+    it('throws errors in move calls', () => {
+      expect(projects.move).to.throw(Error);
+    });
+
+    it('throws errors in remove calls', () => {
+      expect(projects.remove).to.throw(Error);
+    });
+
+    it('throws errors in test calls', () => {
+      expect(projects.test).to.throw(Error);
     });
   });
 });
