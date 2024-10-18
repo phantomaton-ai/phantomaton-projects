@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "cov": "c8 -x '*.test.*' -r html --check-coverage --lines 100 npm test",
-    "test": "mocha --ignore 'node_modules/**/*' **/*.test.js"
+    "all": "lovecraft -a",
+    "cov": "lovecraft -c",
+    "lint": "lovecraft -l",
+    "test": "lovecraft"
   },
   "keywords": [],
   "author": "",
@@ -12,8 +14,9 @@
   "description": "",
   "type": "module",
   "devDependencies": {
-    "c8": "^10.1.2",
-    "chai": "^5.1.1",
-    "mocha": "^10.7.3"
+    "lovecraft": "^1.0.2"
+  },
+  "dependencies": {
+    "aleister": "^1.0.1"
   }
 }
