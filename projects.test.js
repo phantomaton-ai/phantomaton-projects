@@ -78,35 +78,35 @@ describe('Projects', () => {
     });
 
     it('throws errors in list calls', () => {
-      expect(projects.list).to.throw(Error);
+      expect(() => projects.list()).to.throw(Error);
     });
 
     it('throws errors in initialize calls', () => {
-      expect(projects.initialize).to.throw(Error);
+      expect(() => projects.initialize('test-project')).to.throw(Error);
     });
 
     it('throws errors in files calls', () => {
-      expect(projects.files).to.throw(Error);
+      expect(() => projects.files('test-project')).to.throw(Error);
     });
 
     it('throws errors in read calls', () => {
-      expect(projects.read).to.throw(Error);
+      expect(() => projects.read('test-project', 'test.txt')).to.throw(Error);
     });
 
     it('throws errors in write calls', () => {
-      expect(projects.write).to.throw(Error);
+      expect(() => projects.write('test-project', 'test.txt', 'Hi!')).to.throw(Error);
     });
 
     it('throws errors in move calls', () => {
-      expect(projects.move).to.throw(Error);
+      expect(() => projects.move('test-project', 'test.txt', 'test.bak')).to.throw(Error);
     });
 
     it('throws errors in remove calls', () => {
-      expect(projects.remove).to.throw(Error);
+      expect(() => projects.remove('test-project', 'test.txt')).to.throw(Error);
     });
 
     it('throws errors in test calls', () => {
-      expect(projects.test).to.throw(Error);
+      expect(() => projects.test('test-project')).to.throw(Error);
     });
   });
 });
