@@ -3,8 +3,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import commands from './commands.js';
-import projects from './projects.js';
+import projects from './index.js';
 
 const EXPECTED = [
   {
@@ -72,7 +71,7 @@ const EXPECTED = [
 
 describe('Commands', () => {
   const tmpDir = path.join('tmp', uuidv4(), 'projects');
-  const actual = commands({ home: tmpDir }).commands;
+  const actual = projects({ home: tmpDir }).commands;
 
   EXPECTED.forEach(({ name, validate, execute, example, description }, index) => {
     describe(name, () => {

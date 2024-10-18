@@ -1,3 +1,4 @@
-import commands from './commands.js';
+import aleister from 'aleister';
+import Projects from './projects.js';
 
-export default (options = {}) => ({ commands: commands(options) });
+export default aleister(Projects);
