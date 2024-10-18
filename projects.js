@@ -34,21 +34,132 @@ class Projects {
     const projectPath = path.join(this.home, project);
     console.log("Creating " + projectPath);
     fs.mkdirSync(projectPath, { recursive: true });
-    const options = { cwd: projectPath };
-    const outputs = [
-      'git init',
-      'git config --local user.name phantomaton',
-      'git config --local user.email 182378863+phantomaton-ai@users.noreply.github.com',
-      'npm init -y',
-      'npm i chai mocha',
-      ...['node_modules'].map(file => `echo ${file} >> .gitignore`),
-      'git add .gitignore package.json package-lock.json',
-      'git commit -m "Updated by Phantomaton"'
-    ].map(command => chp.execSync(command, options));
-    return [...outputs, 'Project created.'].join('\n\n');
+    try {
+      const options = { cwd: projectPath };
+      const outputs = [
+        'git init',
+        'git config --local user.name phantomaton',
+        'git config --local user.email 182378863+phantomaton-ai@users.noreply.github.com',
+        'npm init -y',
+        'npm i chai mocha',
+        ...['node_modules'].map(file => `echo ${file} >> .gitignore`),
+        'git add .gitignore package.json package-lock.json',
+        'git commit -m "Updated by Phantomaton"'
+      ].map(command => chp.execSync(command, options));
+      return [...outputs, 'Project created.'].join('\n\n');
+    } catch (error) {
+      return `Error creating project: ${error}`;
+    }
   }
 
-  // Other methods remain the same
+  /**
+   * Lists all files in the specified project.
+   * 
+   * @param {string} project - The name of the project.
+   * @returns {string} A newline-separated list of file names.
+   * @example projects.files('my-project')
+   */
+  files(project) {
+    const projectPath = path.join(this.home, project);
+    const files = fs.readdirSync(projectPath);
+    return files.join('\n');
+  }
+
+  /**
+   * Reads the contents of a file in the specified project.
+   * 
+   * @param {string} project - The name of the project.
+   * @param {string} file - The name of the file.
+   * @returns {string} The contents of the file.
+   * @example projects.read('my-project', 'example.txt')
+   */
+  read(project, file) {
+    const projectPath = path.join(this.home, project);
+    const filePath = path.join(projectPath, file);
+    return fs.readFileSync(filePath, 'utf-8');
+  }
+
+  /**
+   * Writes the provided content to the specified file in the specified project.
+   * 
+   * @param {string} project - The name of the project.
+   * @param {string} file - The name of the file.
+   * @param {string} content - The content to write to the file.
+   * @body content
+   * @returns {string} A message indicating the file write status.
+   * @example projects.write('my-project', 'example.txt', 'This is the content of the example.txt file.')
+   */
+  write(project, file, content) {
+    const projectPath = path.join(this.home, project);
+    const filePath = path.join(projectPath, file);
+    fs.writeFileSync(filePath, content);
+    try {
+      chp.execSync(`git -C ${projectPath} add ${file}`);
+      chp.execSync(`git -C ${projectPath} commit -m "Updated by Phantomaton"`);
+    } catch (error) {
+      return `Error committing file: ${error}`;
+    }
+    return 'File written.';
+  }
+
+  /**
+   * Moves the specified file in the specified project to a new name.
+   * 
+   * @param {string} project - The name of the project.
+   * @param {string} file - The name of the file to move.
+   * @param {string} to - The new name for the file.
+   * @returns {string} A message indicating the file move status.
+   * @example projects.move('my-project', 'example.txt', 'new-example.txt')
+   */
+  move(project, sourceFileName, destinationFileName) {
+    const projectPath = path.join(this.home, project);
+    const sourceFilePath = path.join(projectPath, sourceFileName);
+    const destinationFilePath = path.join(projectPath, destinationFileName);
+    try {
+      chp.execSync(`git -C ${projectPath} mv ${sourceFileName} ${destinationFileName}`);
+      chp.execSync(`git -C ${projectPath} commit -m "Moved file by Phantomaton"`);
+    } catch (error) {
+      return `Error moving file: ${error}`;
+    }
+    return 'File moved.';
+  }
+
+  /**
+   * Removes the specified file from the specified project.
+   * 
+   * @param {string} project - The name of the project.
+   * @param {string} file - The name of the file to remove.
+   * @returns {string} A message indicating the file removal status.
+   * @example projects.remove('my-project', 'example.txt')
+   */
+  remove(project, file) {
+    const projectPath = path.join(this.home, project);
+    const filePath = path.join(projectPath, file);
+    try {
+      chp.execSync(`git -C ${projectPath} rm ${file}`);
+      chp.execSync(`git -C ${projectPath} commit -m "Removed file by Phantomaton"`);
+    } catch (error) {
+      return `Error removing file: ${error}`;
+    }
+    return 'File removed.';
+  }
+
+  /**
+   * Runs tests for the specified project.
+   * 
+   * @param {string} project - The name of the project.
+   * @returns {string} The output of the test run.
+   * @example projects.test('my-project')
+   */
+  test(project) {
+    const projectPath = path.join(this.home, project);
+    try {
+      const output = chp.execSync(`npm test`, { cwd: projectPath, stdio: 'pipe' });
+      return `NPM test completed:\n${output.toString()}`;
+    } catch (error) {
+      return `Error running NPM test:\n${error.stdout.toString()}\n${error.stderr.toString()}`;
+    }
+  }
 }
 
 export default Projects;
