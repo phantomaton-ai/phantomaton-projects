@@ -3,11 +3,11 @@ import path from 'path';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
-import createProjects from './projects.js';
+import Projects from './projects.js';
 
 describe('Projects', () => {
   const tmpDir = path.join('tmp', uuidv4(), 'projects');
-  const projects = createProjects({ home: tmpDir });
+  const projects = new Projects({ home: tmpDir });
 
   beforeEach(() => {
     const cwd = path.join(tmpDir, 'my-project');

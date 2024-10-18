@@ -8,12 +8,6 @@ const DEFAULT_PROJECT_DIR = 'data/projects';
  * Manages Phantomaton projects.
  */
 class Projects {
-  /**
-   * Creates a new Projects instance.
-   * 
-   * @param {object} [options] - The configuration options.
-   * @param {string} [options.home=data/projects] - The directory where projects are stored.
-   */
   constructor(options = {}) {
     this.home = options.home || DEFAULT_PROJECT_DIR;
   }
@@ -22,15 +16,7 @@ class Projects {
    * Lists all available projects.
    * 
    * @returns {string} A newline-separated list of project names.
-   * @example
-   * ```
-   * projects.list()
-   * // Outputs:
-   * // hello-world
-   * // my-project
-   * // directive-executor
-   * // ...
-   * ```
+   * @example projects.list()
    */
   list() {
     const projects = fs.readdirSync(this.home);
@@ -42,15 +28,7 @@ class Projects {
    * 
    * @param {string} projectName - The name of the new project.
    * @returns {string} A message indicating the project creation status.
-   * @example
-   * ```
-   * projects.initialize('my-new-project')
-   * // Outputs:
-   * // Creating data/projects/my-new-project
-   * // Git initialized
-   * // NPM initialized
-   * // Project created.
-   * ```
+   * @example projects.initialize('my-new-project')
    */
   initialize(projectName) {
     const projectPath = path.join(this.home, projectName);
@@ -79,13 +57,7 @@ class Projects {
    * 
    * @param {string} projectName - The name of the project.
    * @returns {string} A newline-separated list of file names.
-   * @example
-   * ```
-   * projects.files('my-project')
-   * // Outputs:
-   * // index.js
-   * // README.md
-   * ```
+   * @example projects.files('my-project')
    */
   files(projectName) {
     const projectPath = path.join(this.home, projectName);
@@ -99,11 +71,7 @@ class Projects {
    * @param {string} projectName - The name of the project.
    * @param {string} fileName - The name of the file.
    * @returns {string} The contents of the file.
-   * @example
-   * ```
-   * projects.read('my-project', 'index.js')
-   * // Outputs the contents of the index.js file
-   * ```
+   * @example projects.read('my-project', 'index.js')
    */
   read(projectName, fileName) {
     const projectPath = path.join(this.home, projectName);
@@ -118,11 +86,7 @@ class Projects {
    * @param {string} fileName - The name of the file.
    * @param {string} content - The content to write to the file.
    * @returns {string} A message indicating the file write status.
-   * @example
-   * ```
-   * projects.write('my-project', 'example.txt', 'This is the content of the example.txt file.')
-   * // Outputs: File written.
-   * ```
+   * @example projects.write('my-project', 'example.txt', 'This is the content of the example.txt file.')
    */
   write(projectName, fileName, content) {
     const projectPath = path.join(this.home, projectName);
@@ -144,11 +108,7 @@ class Projects {
    * @param {string} sourceFileName - The name of the file to move.
    * @param {string} destinationFileName - The new name for the file.
    * @returns {string} A message indicating the file move status.
-   * @example
-   * ```
-   * projects.move('my-project', 'example.txt', 'new-example.txt')
-   * // Outputs: File moved.
-   * ```
+   * @example projects.move('my-project', 'example.txt', 'new-example.txt')
    */
   move(projectName, sourceFileName, destinationFileName) {
     const projectPath = path.join(this.home, projectName);
@@ -169,11 +129,7 @@ class Projects {
    * @param {string} projectName - The name of the project.
    * @param {string} fileName - The name of the file to remove.
    * @returns {string} A message indicating the file removal status.
-   * @example
-   * ```
-   * projects.remove('my-project', 'example.txt')
-   * // Outputs: File removed.
-   * ```
+   * @example projects.remove('my-project', 'example.txt')
    */
   remove(projectName, fileName) {
     const projectPath = path.join(this.home, projectName);
@@ -192,11 +148,7 @@ class Projects {
    * 
    * @param {string} projectName - The name of the project.
    * @returns {string} The output of the test run.
-   * @example
-   * ```
-   * projects.test('my-project')
-   * // Outputs the results of running the tests for the my-project project
-   * ```
+   * @example projects.test('my-project')
    */
   test(projectName) {
     const projectPath = path.join(this.home, projectName);
@@ -209,4 +161,4 @@ class Projects {
   }
 }
 
-export default (options) => new Projects(options);
+export default Projects;

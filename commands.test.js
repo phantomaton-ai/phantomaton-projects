@@ -91,7 +91,7 @@ const EXPECTED = [
 
 describe('Commands', () => {
   const tmpDir = path.join('tmp', uuidv4(), 'projects');
-  const actual = commands({ home: tmpDir });
+  const actual = commands({ home: tmpDir }).commands;
 
   EXPECTED.forEach(({ name, validate, execute, example, description }, index) => {
     describe(name, () => {

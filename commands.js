@@ -1,4 +1,4 @@
 import aleister from 'aleister';
-import { projects } from './projects.js';
+import Projects from './projects.js';
 
-export default aleister(projects);
+export default aleister(Projects);
