@@ -11,41 +11,29 @@ const EXPECTED = [
     name: 'list',
     validate: (attributes, body) => true,
     //execute: (attributes, body) => api.list(),
-    example: {
-      attributes: {},
-      body: ''
-    },
+    example: { attributes: {} },
     description: 'Lists all available projects.'
   },
   {
     name: 'initialize',
     validate: ({ project }) => typeof project === 'string',
     //execute: ({ project }) => api.initialize(project),
-    example: {
-      attributes: { project: 'my-project' },
-      body: ''
-    },
+    example: { attributes: { project: 'my-project' } },
     description: 'Creates a new project with the specified name.'
   },
   {
     name: 'files',
     validate: ({ project }) => typeof project === 'string',
     //execute: ({ project }) => api.files(project),
-    example: {
-      attributes: { project: 'my-project' },
-      body: ''
-    },
+    example: { attributes: { project: 'my-project' } },
     description: 'Lists all files in the specified project.'
   },
   {
     name: 'read',
     validate: ({ project, file }) => typeof project === 'string' && typeof file === 'string',
     //execute: ({ project, file }) => api.read(project, file),
-    example: {
-      attributes: { project: 'my-project', file: 'example.txt' },
-      body: ''
-    },
-    description: 'Reads the contents of the specified file in the specified project.'
+    example: { attributes: { project: 'my-project', file: 'example.txt' } },
+    description: 'Reads the contents of a file in the specified project.'
   },
   {
     name: 'write',
@@ -63,7 +51,6 @@ const EXPECTED = [
     //execute: ({ project, file, to }) => api.move(project, file, to),
     example: {
       attributes: { project: 'my-project', file: 'example.txt', to: 'new-example.txt' },
-      body: ''
     },
     description: 'Moves the specified file in the specified project to a new name.'
   },
@@ -71,21 +58,15 @@ const EXPECTED = [
     name: 'remove',
     validate: ({ project, file }) => typeof project === 'string' && typeof file === 'string',
     //execute: ({ project, file }) => api.remove(project, file),
-    example: {
-      attributes: { project: 'my-project', file: 'example.txt' },
-      body: ''
-    },
+    example: {  attributes: { project: 'my-project', file: 'example.txt' } },
     description: 'Removes the specified file from the specified project.'
   },
   {
     name: 'test',
     validate: ({ project }) => typeof project === 'string',
     //execute: ({ project }) => api.test(project),
-    example: {
-      attributes: { project: 'my-project' },
-      body: ''
-    },
-    description: 'Tests the specified project by running any available tests.'
+    example: { attributes: { project: 'my-project' } },
+    description: 'Runs tests for the specified project.'
   }
 ];
 

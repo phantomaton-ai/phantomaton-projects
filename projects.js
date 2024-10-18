@@ -24,14 +24,14 @@ class Projects {
   }
 
   /**
-   * Initializes a new project with the specified name.
+   * Creates a new project with the specified name.
    * 
-   * @param {string} projectName - The name of the new project.
+   * @param {string} project - The name of the new project.
    * @returns {string} A message indicating the project creation status.
-   * @example projects.initialize('my-new-project')
+   * @example projects.initialize('my-project')
    */
-  initialize(projectName) {
-    const projectPath = path.join(this.home, projectName);
+  initialize(project) {
+    const projectPath = path.join(this.home, project);
     console.log("Creating " + projectPath);
     fs.mkdirSync(projectPath, { recursive: true });
     try {
@@ -55,12 +55,12 @@ class Projects {
   /**
    * Lists all files in the specified project.
    * 
-   * @param {string} projectName - The name of the project.
+   * @param {string} project - The name of the project.
    * @returns {string} A newline-separated list of file names.
    * @example projects.files('my-project')
    */
-  files(projectName) {
-    const projectPath = path.join(this.home, projectName);
+  files(project) {
+    const projectPath = path.join(this.home, project);
     const files = fs.readdirSync(projectPath);
     return files.join('\n');
   }
@@ -68,32 +68,33 @@ class Projects {
   /**
    * Reads the contents of a file in the specified project.
    * 
-   * @param {string} projectName - The name of the project.
-   * @param {string} fileName - The name of the file.
+   * @param {string} project - The name of the project.
+   * @param {string} file - The name of the file.
    * @returns {string} The contents of the file.
-   * @example projects.read('my-project', 'index.js')
+   * @example projects.read('my-project', 'example.txt')
    */
-  read(projectName, fileName) {
-    const projectPath = path.join(this.home, projectName);
-    const filePath = path.join(projectPath, fileName);
+  read(project, file) {
+    const projectPath = path.join(this.home, project);
+    const filePath = path.join(projectPath, file);
     return fs.readFileSync(filePath, 'utf-8');
   }
 
   /**
    * Writes the provided content to the specified file in the specified project.
    * 
-   * @param {string} projectName - The name of the project.
-   * @param {string} fileName - The name of the file.
+   * @param {string} project - The name of the project.
+   * @param {string} file - The name of the file.
    * @param {string} content - The content to write to the file.
+   * @body content
    * @returns {string} A message indicating the file write status.
    * @example projects.write('my-project', 'example.txt', 'This is the content of the example.txt file.')
    */
-  write(projectName, fileName, content) {
-    const projectPath = path.join(this.home, projectName);
-    const filePath = path.join(projectPath, fileName);
+  write(project, file, content) {
+    const projectPath = path.join(this.home, project);
+    const filePath = path.join(projectPath, file);
     fs.writeFileSync(filePath, content);
     try {
-      execSync(`git -C ${projectPath} add ${fileName}`);
+      execSync(`git -C ${projectPath} add ${file}`);
       execSync(`git -C ${projectPath} commit -m "Updated by Phantomaton"`);
     } catch (error) {
       return `Error committing file: ${error}`;
@@ -104,14 +105,14 @@ class Projects {
   /**
    * Moves the specified file in the specified project to a new name.
    * 
-   * @param {string} projectName - The name of the project.
-   * @param {string} sourceFileName - The name of the file to move.
-   * @param {string} destinationFileName - The new name for the file.
+   * @param {string} project - The name of the project.
+   * @param {string} file - The name of the file to move.
+   * @param {string} to - The new name for the file.
    * @returns {string} A message indicating the file move status.
    * @example projects.move('my-project', 'example.txt', 'new-example.txt')
    */
-  move(projectName, sourceFileName, destinationFileName) {
-    const projectPath = path.join(this.home, projectName);
+  move(project, sourceFileName, destinationFileName) {
+    const projectPath = path.join(this.home, project);
     const sourceFilePath = path.join(projectPath, sourceFileName);
     const destinationFilePath = path.join(projectPath, destinationFileName);
     try {
@@ -126,16 +127,16 @@ class Projects {
   /**
    * Removes the specified file from the specified project.
    * 
-   * @param {string} projectName - The name of the project.
-   * @param {string} fileName - The name of the file to remove.
+   * @param {string} project - The name of the project.
+   * @param {string} file - The name of the file to remove.
    * @returns {string} A message indicating the file removal status.
    * @example projects.remove('my-project', 'example.txt')
    */
-  remove(projectName, fileName) {
-    const projectPath = path.join(this.home, projectName);
-    const filePath = path.join(projectPath, fileName);
+  remove(project, file) {
+    const projectPath = path.join(this.home, project);
+    const filePath = path.join(projectPath, file);
     try {
-      execSync(`git -C ${projectPath} rm ${fileName}`);
+      execSync(`git -C ${projectPath} rm ${file}`);
       execSync(`git -C ${projectPath} commit -m "Removed file by Phantomaton"`);
     } catch (error) {
       return `Error removing file: ${error}`;
@@ -144,14 +145,14 @@ class Projects {
   }
 
   /**
-   * Runs the tests for the specified project.
+   * Runs tests for the specified project.
    * 
-   * @param {string} projectName - The name of the project.
+   * @param {string} project - The name of the project.
    * @returns {string} The output of the test run.
    * @example projects.test('my-project')
    */
-  test(projectName) {
-    const projectPath = path.join(this.home, projectName);
+  test(project) {
+    const projectPath = path.join(this.home, project);
     try {
       const output = execSync(`npm test`, { cwd: projectPath, stdio: 'pipe' });
       return `NPM test completed:\n${output.toString()}`;
