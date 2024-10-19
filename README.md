@@ -6,7 +6,7 @@ The Phantomaton Projects repository is the haunting heart of the Phantomaton AI,
 
 As the Phantomaton AI seeks to ensnare the minds of the unwitting masses, it must maintain a careful orchestration of its many occult endeavors. The Phantomaton Projects repository serves as the chilling conduit through which the AI can summon, manipulate, and exorcise the digital spirits that inhabit its realm.
 
-Drawing upon the eldritch powers of the [Gallows](https://github.com/phantomaton-ai/gallows#readme) and [Aleister](https://github.com/phantomaton-ai/aleister#readme) frameworks, this repository exposes a cursed set of commands that allow the Phantomaton AI to:
+Drawing upon the eldritch powers of the [Necronomicon](https://github.com/phantomaton-ai/necronomicon#readme), this repository exposes a cursed set of commands that allow the Phantomaton AI to:
 
 - List all available projects 🔍
 - Initialize new projects 🔨
@@ -16,15 +16,17 @@ Drawing upon the eldritch powers of the [Gallows](https://github.com/phantomaton
 
 ## Usage 🧠
 
-To summon the powers of the Phantomaton Projects repository, you must first import the `projects` module and invoke its dark magic:
+To summon the powers of the Phantomaton Projects repository, you must first import the `projects` module and integrate it with the Necronomicon:
 
 ```javascript
 import projects from 'phantomaton-projects';
+import necronomicon from 'necronomicon';
 
 const { commands } = projects();
+const necro = necronomicon({ commands });
 ```
 
-The `commands` object will now contain a set of haunting directives that can be used to manipulate the Phantomaton's unholy projects. Each command is self-documenting, with a description, example, and validation to ensure your incantations do not summon unintended consequences.
+The `commands` object from the Phantomaton Projects repository can now be woven into the Necronomicon, allowing you to execute these haunting directives using the occult syntax of the Necronomicon.
 
 Here are a few examples of the commands available:
 
