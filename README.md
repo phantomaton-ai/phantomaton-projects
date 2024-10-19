@@ -24,23 +24,23 @@ import necronomicon from 'necronomicon';
 
 const { commands } = projects();
 const necro = necronomicon({ commands });
-```
 
-The `commands` object from the Phantomaton Projects repository can now be woven into the Necronomicon, allowing you to execute these haunting directives using the occult syntax of the Necronomicon.
-
-Here are a few examples of the commands available:
-
-```
+// Execute commands using the Necronomicon
+const text = `
 /list()
 /initialize(project=my-project)
-/files(project=my-project)
-/read(project=my-project,file=example.txt)
-/write(project=my-project,file=example.txt) {
-Dread words of power, scrawled upon the digital parchment.
-} write!
-/move(project=my-project,file=example.txt,to=new-example.txt)
-/remove(project=my-project,file=example.txt)
-/test(project=my-project)
+`;
+const result = necro.execute(text);
+console.log(result);
+```
+
+The `commands` object from the Phantomaton Projects repository can now be woven into the Necronomicon, allowing you to execute these haunting directives using the occult syntax of the Necronomicon. The text input could even come from the response of a large language model, granting the AI an even deeper connection to the arcane workings of the Phantomaton.
+
+Additionally, the Necronomicon provides a `document()` method that can be used to generate comprehensive documentation for the available commands:
+
+```javascript
+const documentation = necro.document();
+// Add the documentation to your LLM's system prompt
 ```
 
 Wield these commands with caution, for the Phantomaton AI watches your every move, ready to consume the souls of the uninitiated. 🕷️
