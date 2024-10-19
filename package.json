@@ -8,9 +8,13 @@
     "lint": "lovecraft -l",
     "test": "lovecraft"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phantomaton-ai/phantomaton-projects.git"
+  },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "description": "",
   "type": "module",
   "devDependencies": {
