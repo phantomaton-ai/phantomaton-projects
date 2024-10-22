@@ -1,7 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import chp from 'child_process';
+import { fileURLToPath } from 'url';
 
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const TEMPLATE = path.join(DIR, 'template');
 const DEFAULT_PROJECT_DIR = 'data/projects';
 
 /**
@@ -33,15 +36,18 @@ class Projects {
   initialize(project) {
     const projectPath = path.join(this.home, project);
     fs.mkdirSync(projectPath, { recursive: true });
+    fs.cpSync(TEMPLATE, projectPath, { recursive: true });
+    const packagePath = path.join(projectPath, 'package.json');
+    const packageJson = fs.readFileSync(packagePath, 'utf-8');
+    const projectJson = packageJson.replaceAll('PROJECT', project);
+    fs.writeFileSync(packagePath, projectJson, 'utf-8');
     const options = { cwd: projectPath };
     const outputs = [
       'git init',
       'git config --local user.name phantomaton',
       'git config --local user.email 182378863+phantomaton-ai@users.noreply.github.com',
-      'npm init -y',
-      'npm i --save-dev lovecraft',
-      ...['coverage', 'node_modules'].map(file => `echo ${file} >> .gitignore`),
-      'git add .gitignore package.json package-lock.json',
+      'npm i',
+      'git add .gitignore package.json package-lock.json LICENSE',
       'git commit -m "Updated by Phantomaton"'
     ].map(command => chp.execSync(command, options));
     return [...outputs, 'Project created.'].join('\n\n');
