@@ -39,8 +39,8 @@ class Projects {
       'git config --local user.name phantomaton',
       'git config --local user.email 182378863+phantomaton-ai@users.noreply.github.com',
       'npm init -y',
-      'npm i chai mocha',
-      ...['node_modules'].map(file => `echo ${file} >> .gitignore`),
+      'npm i --save-dev lovecraft',
+      ...['coverage', 'node_modules'].map(file => `echo ${file} >> .gitignore`),
       'git add .gitignore package.json package-lock.json',
       'git commit -m "Updated by Phantomaton"'
     ].map(command => chp.execSync(command, options));
