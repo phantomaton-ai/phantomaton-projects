@@ -6,6 +6,7 @@
     "all": "lovecraft -a",
     "cov": "lovecraft -c",
     "lint": "lovecraft -l",
+    "pub": "lovecraft -a -p",
     "test": "lovecraft"
   },
   "repository": {
@@ -18,7 +19,7 @@
   "description": "",
   "type": "module",
   "devDependencies": {
-    "lovecraft": "^1.0.2"
+    "lovecraft": "^1.0.3"
   },
   "dependencies": {
     "aleister": "^1.0.1"
