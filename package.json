@@ -19,7 +19,9 @@
   "description": "",
   "type": "module",
   "devDependencies": {
-    "lovecraft": "^1.0.3"
+    "lovecraft": "^1.0.3",
+    "phantomaton-conversations": "^1.0.1",
+    "uuid": "^11.1.0"
   },
   "dependencies": {
     "aleister": "^1.0.1",

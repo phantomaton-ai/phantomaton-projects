@@ -1,20 +1,22 @@
 {
-  "name": "PROJECT",
+  "name": "${project}",
   "version": "0.0.0",
-  "main": "PROJECT.js",
+  "main": "${project}.js",
   "scripts": {
     "all": "lovecraft -a",
     "cov": "lovecraft -c",
     "lint": "lovecraft -l",
+    "min": "lovecraft -a -p minor",
+    "maj": "lovecraft -a -p major",
     "pub": "lovecraft -a -p",
     "test": "lovecraft"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/phantomaton-ai/PROJECT.git"
+    "url": "${repositories}/${project}.git"
   },
   "keywords": [],
-  "author": "Phantomaton",
+  "author": "${author}",
   "license": "MIT",
   "description": "",
   "type": "module",

@@ -26,8 +26,10 @@ describe('Projects', () => {
   });
 
   it('initializes new project', () => {
+    stub(chp, 'execSync');
     expect(projects.initialize('new-project')).to.include('Project created');
     expect(fs.existsSync(path.join(tmpDir, 'new-project'))).to.be.true;
+    chp.execSync.restore();
   }).timeout(5000);
 
   it('lists files in a project', () => {

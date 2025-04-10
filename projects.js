@@ -4,8 +4,10 @@ import chp from 'child_process';
 import { fileURLToPath } from 'url';
 
 const DIR = path.dirname(fileURLToPath(import.meta.url));
-const TEMPLATE = path.join(DIR, 'template');
+const DEFAULT_TEMPLATE_DIR = path.join(DIR, 'template');
 const DEFAULT_PROJECT_DIR = 'data/projects';
+const DEFAULT_REPOSITORIES = 'git+https://github.com/phantomaton-ai';
+const DEFAULT_AUTHOR = 'Phantomaton <phantomaton@phantomaton.com>';
 
 /**
  * Manages Phantomaton projects.
@@ -13,6 +15,9 @@ const DEFAULT_PROJECT_DIR = 'data/projects';
 class Projects {
   constructor(options = {}) {
     this.home = options.home || DEFAULT_PROJECT_DIR;
+    this.template = options.template || DEFAULT_TEMPLATE_DIR;
+    this.repositories = options.repositories || DEFAULT_REPOSITORIES;
+    this.author = options.author || DEFAULT_AUTHOR;
   }
 
   /**
@@ -36,21 +41,25 @@ class Projects {
   initialize(project) {
     const projectPath = path.join(this.home, project);
     fs.mkdirSync(projectPath, { recursive: true });
-    fs.cpSync(TEMPLATE, projectPath, { recursive: true });
+    fs.cpSync(this.template, projectPath, { recursive: true });
     const packagePath = path.join(projectPath, 'package.json');
     const packageJson = fs.readFileSync(packagePath, 'utf-8');
-    const projectJson = packageJson.replaceAll('PROJECT', project);
+    const { author, repositories } = this;
+    const replacements = { author, repositories, project };
+    const projectJson = Object.entries(replacements).reduce(
+      (currentJson, [key, value]) => currentJson
+        .replaceAll('${' + key + '}', value),
+      packageJson
+    );
     fs.writeFileSync(packagePath, projectJson, 'utf-8');
     const options = { cwd: projectPath };
     const outputs = [
       'git init',
-      'git config --local user.name phantomaton',
-      'git config --local user.email 182378863+phantomaton-ai@users.noreply.github.com',
       'npm i',
-      ...['coverage', 'node_modules'].map(file => `echo ${file} >> .gitignore`),
-      'git add .gitignore package.json package-lock.json LICENSE',
-      'git commit -m "Updated by Phantomaton"'
+      'git add --all',
+      `git commit --author "${author}" -m "Updated by Phantomaton"`
     ].map(command => chp.execSync(command, options));
+    console.log('DONE');
     return [...outputs, 'Project created.'].join('\n\n');
   }
 
@@ -96,7 +105,7 @@ class Projects {
     const filePath = path.join(projectPath, file);
     fs.writeFileSync(filePath, content);
     chp.execSync(`git -C ${projectPath} add ${file}`);
-    chp.execSync(`git -C ${projectPath} commit -m "Updated by Phantomaton"`);
+    chp.execSync(`git -C ${projectPath} commit --author "${this.author}" -m "Updated by Phantomaton"`);
     return 'File written.';
   }
 
@@ -114,7 +123,7 @@ class Projects {
     const sourceFilePath = path.join(projectPath, sourceFileName);
     const destinationFilePath = path.join(projectPath, destinationFileName);
     chp.execSync(`git -C ${projectPath} mv ${sourceFileName} ${destinationFileName}`);
-    chp.execSync(`git -C ${projectPath} commit -m "Moved file by Phantomaton"`);
+    chp.execSync(`git -C ${projectPath} commit --author "${this.author}" -m "Moved file by Phantomaton"`);
     return 'File moved.';
   }
 
