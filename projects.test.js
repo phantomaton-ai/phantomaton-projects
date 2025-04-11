@@ -70,6 +70,36 @@ describe('Projects', () => {
     expect(projects.test('my-project')).to.include('Test passed');
   }).timeout(5000);
 
+  describe('path protection', () => {
+    it('prevents initializing outside of home', () => {
+      expect(() => projects.initialize('..')).to.throw(Error);
+    });
+
+    it('prevents listing outside of home', () => {
+      expect(() => projects.list('foo', '../..')).to.throw(Error);
+      expect(() => projects.list('..', 'bar')).to.throw(Error);
+    });
+
+    it('prevents reading outside of home', () => {
+      expect(() => projects.read('foo', '../..')).to.throw(Error);
+      expect(() => projects.read('..', 'bar')).to.throw(Error);
+    });
+
+    it('prevents moving outside of home', () => {
+      expect(() => projects.write('foo', '../..')).to.throw(Error);
+      expect(() => projects.write('..', 'bar')).to.throw(Error);
+    });
+
+    it('prevents removing outside of home', () => {
+      expect(() => projects.remove('foo', '../..')).to.throw(Error);
+      expect(() => projects.remove('..', 'bar')).to.throw(Error);
+    });
+
+    it('prevents testing outside of home', () => {
+      expect(() => projects.test('..')).to.throw(Error);
+    });
+  });
+
   describe('error-rethrowing', () => {
     const stubbers = ['readFileSync', 'writeFileSync', 'readdirSync', 'mkdirSync'];
 
