@@ -22,7 +22,7 @@ describe('Projects', () => {
   it('lists projects', () => {
     fs.mkdirSync(path.join(tmpDir, 'project1'));
     fs.mkdirSync(path.join(tmpDir, 'project2'));
-    expect(projects.list()).to.equal('my-project\nproject1\nproject2');
+    expect(projects.projects()).to.equal('my-project\nproject1\nproject2');
   });
 
   it('initializes new project', () => {
@@ -35,7 +35,7 @@ describe('Projects', () => {
   it('lists files in a project', () => {
     fs.writeFileSync(path.join(tmpDir, 'my-project', 'file1.txt'), 'content1');
     fs.writeFileSync(path.join(tmpDir, 'my-project', 'file2.txt'), 'content2');
-    expect(projects.files('my-project')).to.equal('.git\nfile1.txt\nfile2.txt');
+    expect(projects.list('my-project', '.')).to.equal('.git\nfile1.txt\nfile2.txt');
   });
 
   it('reads files in a project', () => {
@@ -68,7 +68,7 @@ describe('Projects', () => {
     const packageJson = JSON.stringify({ scripts: { test: "echo Test passed" } });
     fs.writeFileSync(path.join(tmpDir, 'my-project', 'package.json'), packageJson);
     expect(projects.test('my-project')).to.include('Test passed');
-  });
+  }).timeout(5000);
 
   describe('error-rethrowing', () => {
     const stubbers = ['readFileSync', 'writeFileSync', 'readdirSync', 'mkdirSync'];

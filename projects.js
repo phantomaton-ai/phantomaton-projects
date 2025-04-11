@@ -9,12 +9,28 @@ const DEFAULT_PROJECT_DIR = 'data/projects';
 const DEFAULT_REPOSITORIES = 'git+https://github.com/phantomaton-ai';
 const DEFAULT_AUTHOR = 'Phantomaton <phantomaton@phantomaton.com>';
 
+class Home {
+  constructor(path) {
+    this.path = path;
+  }
+
+  subpath(...elements) {
+    const joined = path.join(this.path, ...elements);
+    const relative = path.relative(this.path, joined);
+    const first = relative.split(path.sep)[0];
+    if (path.isAbsolute(relative) || first === '..') {
+      throw new Error(`Illegal path ${path.join(...elements)}`);
+    }
+    return joined;
+  }
+}
+
 /**
  * Manages Phantomaton projects.
  */
 class Projects {
   constructor(options = {}) {
-    this.home = options.home || DEFAULT_PROJECT_DIR;
+    this.home = new Home(options.home || DEFAULT_PROJECT_DIR);
     this.template = options.template || DEFAULT_TEMPLATE_DIR;
     this.repositories = options.repositories || DEFAULT_REPOSITORIES;
     this.author = options.author || DEFAULT_AUTHOR;
@@ -24,10 +40,10 @@ class Projects {
    * Lists all available projects.
    * 
    * @returns {string} A newline-separated list of project names.
-   * @example projects.list()
+   * @example projects.projects()
    */
-  list() {
-    const projects = fs.readdirSync(this.home);
+  projects() {
+    const projects = fs.readdirSync(this.home.path);
     return projects.join('\n');
   }
 
@@ -39,7 +55,7 @@ class Projects {
    * @example projects.initialize('my-project')
    */
   initialize(project) {
-    const projectPath = path.join(this.home, project);
+    const projectPath = this.home.subpath(project);
     fs.mkdirSync(projectPath, { recursive: true });
     fs.cpSync(this.template, projectPath, { recursive: true });
     const packagePath = path.join(projectPath, 'package.json');
@@ -59,19 +75,19 @@ class Projects {
       'git add --all',
       `git commit --author "${author}" -m "Updated by Phantomaton"`
     ].map(command => chp.execSync(command, options));
-    console.log('DONE');
     return [...outputs, 'Project created.'].join('\n\n');
   }
 
   /**
-   * Lists all files in the specified project.
+   * Lists all files and directories in the specified project.
    * 
    * @param {string} project - The name of the project.
+   * @param {string} directory - Directory within the project; . for top-level;
    * @returns {string} A newline-separated list of file names.
-   * @example projects.files('my-project')
+   * @example projects.list('my-project', '.')
    */
-  files(project) {
-    const projectPath = path.join(this.home, project);
+  list(project, directory) {
+    const projectPath = this.home.subpath(project, directory);
     const files = fs.readdirSync(projectPath);
     return files.join('\n');
   }
@@ -85,8 +101,7 @@ class Projects {
    * @example projects.read('my-project', 'example.txt')
    */
   read(project, file) {
-    const projectPath = path.join(this.home, project);
-    const filePath = path.join(projectPath, file);
+    const filePath = this.home.subpath(project, file);
     return fs.readFileSync(filePath, 'utf-8');
   }
 
@@ -101,8 +116,8 @@ class Projects {
    * @example projects.write('my-project', 'example.txt', 'This is the content of the example.txt file.')
    */
   write(project, file, content) {
-    const projectPath = path.join(this.home, project);
-    const filePath = path.join(projectPath, file);
+    const projectPath = this.home.subpath(project);
+    const filePath = this.home.subpath(project, file);
     fs.writeFileSync(filePath, content);
     chp.execSync(`git -C ${projectPath} add ${file}`);
     chp.execSync(`git -C ${projectPath} commit --author "${this.author}" -m "Updated by Phantomaton"`);
@@ -119,9 +134,7 @@ class Projects {
    * @example projects.move('my-project', 'example.txt', 'new-example.txt')
    */
   move(project, sourceFileName, destinationFileName) {
-    const projectPath = path.join(this.home, project);
-    const sourceFilePath = path.join(projectPath, sourceFileName);
-    const destinationFilePath = path.join(projectPath, destinationFileName);
+    const projectPath = this.home.subpath(project);
     chp.execSync(`git -C ${projectPath} mv ${sourceFileName} ${destinationFileName}`);
     chp.execSync(`git -C ${projectPath} commit --author "${this.author}" -m "Moved file by Phantomaton"`);
     return 'File moved.';
@@ -136,8 +149,7 @@ class Projects {
    * @example projects.remove('my-project', 'example.txt')
    */
   remove(project, file) {
-    const projectPath = path.join(this.home, project);
-    const filePath = path.join(projectPath, file);
+    const projectPath = this.home.subpath(project);
     chp.execSync(`git -C ${projectPath} rm ${file}`);
     chp.execSync(`git -C ${projectPath} commit -m "Removed file by Phantomaton"`);
     return 'File removed.';
@@ -151,7 +163,7 @@ class Projects {
    * @example projects.test('my-project')
    */
   test(project) {
-    const projectPath = path.join(this.home, project);
+    const projectPath = this.home.subpath(project);
     const output = chp.execSync(`npm test`, { cwd: projectPath, stdio: 'pipe' });
     return `NPM test completed:\n${output.toString()}`;
   }

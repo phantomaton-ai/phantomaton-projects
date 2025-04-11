@@ -7,7 +7,7 @@ import projects from './index.js';
 
 const EXPECTED = [
   {
-    name: 'list',
+    name: 'projects',
     validate: (attributes, body) => true,
     //execute: (attributes, body) => api.list(),
     example: { attributes: {} },
@@ -21,11 +21,11 @@ const EXPECTED = [
     description: 'Creates a new project with the specified name.'
   },
   {
-    name: 'files',
-    validate: ({ project }) => typeof project === 'string',
+    name: 'list',
+    validate: ({ project, directory }) => typeof project === 'string' && typeof directory === 'string',
     //execute: ({ project }) => api.files(project),
-    example: { attributes: { project: 'my-project' } },
-    description: 'Lists all files in the specified project.'
+    example: { attributes: { project: 'my-project', directory: '.' } },
+    description: 'Lists all files and directories in the specified project.'
   },
   {
     name: 'read',
