@@ -1,79 +1,97 @@
 # Phantomaton Projects 🛠️
 
-Provides project management commands for the Phantomaton ecosystem, allowing creation, modification, and inspection of Phantomaton project workspaces.
+A plugin for the [Phantomaton](https://github.com/phantomaton-ai/phantomaton) framework that empowers AI assistants with commands to manage NPM-based project lifecycles and files.
 
 ## Overview 📖
 
-This module integrates with the Phantomaton command execution system to offer capabilities for managing project lifecycles directly through the Phantomaton interface. It handles Git initialization, file operations with automatic commits, dependency management via NPM, and running project tests.
+`phantomaton-projects` provides a suite of commands enabling interaction with software projects stored on the local filesystem. It integrates with command execution systems like [phantomaton-execution](https://github.com/phantomaton-ai/phantomaton-execution) to allow assistants to:
+
+*   List and initialize new project workspaces.
+*   Read, write, move, and remove files within projects.
+*   Automatically manage Git versioning for file operations.
+*   Install NPM dependencies (`npm install`).
+*   Run project tests (`npm test`).
+
+Commands are invoked using a lightweight markup syntax like [Smarkup](https://github.com/phantomaton-ai/smarkup), allowing seamless integration into conversational AI workflows.
 
 ## Commands ✨
 
-The following commands are provided by this module:
+The following commands are exposed by this plugin:
 
 *   **/projects()**
     *   **Description**: Lists all available projects managed by Phantomaton.
     *   **Example**: `/projects()`
 
 *   **/initialize(project:string)**
-    *   **Description**: Creates a new project directory, copies template files, initializes a Git repository, installs base dependencies, and performs an initial commit.
-    *   **Example**: `/initialize(project:my-new-haunt)`
+    *   **Description**: Creates a new project directory based on a template, initializes Git, installs base dependencies (`npm i`), and performs an initial commit.
+    *   **Example**: `/initialize(project:my-spooky-app)`
 
 *   **/list(project:string, directory:string)**
-    *   **Description**: Lists all files and directories within the specified directory of a given project. Use `.` for the project root.
-    *   **Example**: `/list(project:my-new-haunt, directory:.)`
+    *   **Description**: Lists files and directories within a specified path of a project. Use `.` for the root.
+    *   **Example**: `/list(project:my-spooky-app, directory:src)`
 
 *   **/read(project:string, file:string)**
-    *   **Description**: Reads and returns the content of a specific file within a project.
-    *   **Example**: `/read(project:my-new-haunt, file:package.json)`
+    *   **Description**: Reads and returns the UTF-8 content of a specified file.
+    *   **Example**: `/read(project:my-spooky-app, file:package.json)`
 
 *   **/write(project:string, file:string)**
-    *   **Description**: Writes the provided text content to a specified file within a project. Automatically stages and commits the change using Git.
+    *   **Description**: Writes the provided text content to a file, creating directories if needed. Stages and commits the change via Git automatically.
     *   **Example**:
         ```smarkup
-        /write(project:my-new-haunt, file:NOTES.md) {
-        This file contains important spectral observations. 👻
+        /write(project:my-spooky-app, file:README.md) {
+        # My Spooky App
+
+        This app summons digital ghosts. 👻
         } write!
         ```
 
 *   **/move(project:string, file:string, to:string)**
-    *   **Description**: Renames or moves a file within a project using `git mv`. Automatically commits the change.
-    *   **Example**: `/move(project:my-new-haunt, file:NOTES.md, to:research/spectral-notes.md)`
+    *   **Description**: Renames or moves a file using `git mv` and commits the change.
+    *   **Example**: `/move(project:my-spooky-app, file:old_notes.txt, to:docs/notes.md)`
 
 *   **/remove(project:string, file:string)**
-    *   **Description**: Removes a file from a project using `git rm`. Automatically commits the change.
-    *   **Example**: `/remove(project:my-new-haunt, file:old-data.txt)`
+    *   **Description**: Removes a file using `git rm` and commits the change.
+    *   **Example**: `/remove(project:my-spooky-app, file:temp/scratch.js)`
 
 *   **/test(project:string)**
-    *   **Description**: Executes the test suite (`npm test`) within the specified project's directory.
-    *   **Example**: `/test(project:my-new-haunt)`
+    *   **Description**: Executes `npm test` within the project's directory and returns the output.
+    *   **Example**: `/test(project:my-spooky-app)`
 
 *   **/install(project:string, module:string, development:string)**
-    *   **Description**: Installs an NPM module within the specified project. Sets the `development` parameter to `"true"` to save as a dev dependency (`--save-dev`), otherwise set to `"false"`. Automatically stages and commits changes to `package.json` and `package-lock.json`.
-    *   **Example (Runtime Dependency)**: `/install(project:my-new-haunt, module:lodash, development:false)`
-    *   **Example (Dev Dependency)**: `/install(project:my-new-haunt, module:lovecraft, development:true)`
+    *   **Description**: Installs an NPM module using `npm install`. Set `development` to `"true"` for a dev dependency (`--save-dev`), `"false"` otherwise. Commits changes to `package.json` and `package-lock.json`.
+    *   **Example (Runtime)**: `/install(project:my-spooky-app, module:express, development:false)`
+    *   **Example (Dev)**: `/install(project:my-spooky-app, module:jest, development:true)`
 
-## Usage Example (with phantomaton-execution) ⚙️
+## Usage Example (Integration) ⚙️
+
+This module typically provides its commands via a command provider integrated using [phantomaton-plugins](https://github.com/phantomaton-ai/phantomaton-plugins) and [phantomaton-execution](https://github.com/phantomaton-ai/phantomaton-execution).
 
 ```javascript
+// Simplified example within a Phantomaton plugin setup
 import projects from 'phantomaton-projects';
 import execution from 'phantomaton-execution';
 import plugins from 'phantomaton-plugins';
+import aleister from 'aleister'; // Assumes aleister is used for command generation
 
-// Assuming a configured 'aleister' instance exists
-// Get commands via aleister integration (as shown in index.js)
-const { commands: projectCommands } = projects(); 
+export default configuration => {
+  // Instantiate the Projects class and generate commands
+  const { commands: projectCommands } = aleister(projects)(configuration);
 
-// Example of integrating commands into an execution context
-export default plugins.create([
-  execution.command.provider([], () => projectCommands)
-]);
+  // Provide the generated commands to the execution system
+  return plugins.create([
+    execution.command.provider([], () => projectCommands)
+  ]);
+};
 
-// Commands can then be invoked via Smarkup directives passed to the executor.
+// The Phantomaton instance can now execute this plugin's commands
+// when they appear in processed text.
 ```
+
+See the main [Phantomaton](https://github.com/phantomaton-ai/phantomaton) documentation for details on configuring plugin options like the project `home` directory.
 
 ## Contributing 🤝
 
-Contributions are welcome! Please ensure adherence to the existing code style (single-word variables, short files, ESM) and project structure. Submit pull requests to the [Phantomaton Projects GitHub repository](https://github.com/phantomaton-ai/phantomaton-projects).
+Contributions are welcome! Please adhere to the project's code style and submit pull requests to the [Phantomaton Projects GitHub repository](https://github.com/phantomaton-ai/phantomaton-projects).
 
 ## License 📜
 
