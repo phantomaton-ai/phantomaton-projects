@@ -62,6 +62,22 @@ The following commands are exposed by this plugin:
     *   **Example (Runtime)**: `/install(project:my-spooky-app, module:express, development:false)`
     *   **Example (Dev)**: `/install(project:my-spooky-app, module:jest, development:true)`
 
+## Configuration 🔧
+
+This plugin can be configured via the standard Phantomaton configuration system (e.g., `~/.phantomaton/configuration.json` or `.phantomaton/configuration.json`).
+
+*   **`home`** (string): The root directory where all project workspaces are stored. If not specified, it defaults to `'data/projects'`.
+
+Example configuration:
+```json
+{
+  "phantomaton-projects": {
+    "home": "/path/to/your/projects/directory"
+  }
+}
+```
+Refer to the main [Phantomaton](https://github.com/phantomaton-ai/phantomaton#configuration-) documentation for more details on the configuration system.
+
 ## Usage Example (Integration) ⚙️
 
 This module typically provides its commands via a command provider integrated using [phantomaton-plugins](https://github.com/phantomaton-ai/phantomaton-plugins) and [phantomaton-execution](https://github.com/phantomaton-ai/phantomaton-execution).
@@ -74,7 +90,7 @@ import plugins from 'phantomaton-plugins';
 import aleister from 'aleister'; // Assumes aleister is used for command generation
 
 export default configuration => {
-  // Instantiate the Projects class and generate commands
+  // Instantiate the Projects class with potentially custom config
   const { commands: projectCommands } = aleister(projects)(configuration);
 
   // Provide the generated commands to the execution system
@@ -84,10 +100,8 @@ export default configuration => {
 };
 
 // The Phantomaton instance can now execute this plugin's commands
-// when they appear in processed text.
+// when they appear in processed text, using the configured 'home' path.
 ```
-
-See the main [Phantomaton](https://github.com/phantomaton-ai/phantomaton) documentation for details on configuring plugin options like the project `home` directory.
 
 ## Contributing 🤝
 
