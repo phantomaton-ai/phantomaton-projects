@@ -154,5 +154,9 @@ describe('Projects', () => {
     it('throws errors in test calls', () => {
       expect(() => projects.test('test-project')).to.throw(Error);
     });
+
+    it('throws errors in install calls', () => {
+      expect(() => projects.install('my-project', 'lodash', 'false')).to.throw(Error);
+    });
   });
 });

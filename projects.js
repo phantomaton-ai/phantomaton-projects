@@ -181,14 +181,10 @@ class Projects {
     const projectPath = this.home.subpath(project);
     const devFlag = development === 'true' ? '--save-dev' : '';
     const command = `npm install ${module} ${devFlag}`;
-    try {
-      chp.execSync(command, { cwd: projectPath, stdio: 'pipe' });
-      chp.execSync(`git -C ${projectPath} add package.json package-lock.json`);
-      chp.execSync(`git -C ${projectPath} commit --author "${this.author}" -m "Installed ${module} by Phantomaton"`);
-      return `Module ${module} installed successfully.`;
-    } catch (error) {
-      return `Error installing module ${module}: ${error.message}`;
-    }
+    chp.execSync(command, { cwd: projectPath, stdio: 'pipe' });
+    chp.execSync(`git -C ${projectPath} add package.json package-lock.json`);
+    chp.execSync(`git -C ${projectPath} commit --author "${this.author}" -m "Installed ${module} by Phantomaton"`);
+    return `Module ${module} installed successfully.`;
   }
 }
 
