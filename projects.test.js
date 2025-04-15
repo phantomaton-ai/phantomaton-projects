@@ -70,6 +70,15 @@ describe('Projects', () => {
     expect(projects.test('my-project')).to.include('Test passed');
   }).timeout(5000);
 
+  it('installs a module in a project', () => {
+    const packageJson = { name: 'my-project', version: '1.0.0' };
+    fs.writeFileSync(path.join(tmpDir, 'my-project', 'package.json'), JSON.stringify(packageJson));
+    stub(chp, 'execSync');
+    projects.install('my-project', 'lodash', 'false');
+    expect(chp.execSync).to.have.been.calledWith('npm install lodash ', { cwd: path.join(tmpDir, 'my-project'), stdio: 'pipe' });
+    chp.execSync.restore();
+  });
+
   describe('path protection', () => {
     it('prevents initializing outside of home', () => {
       expect(() => projects.initialize('..')).to.throw(Error);
