@@ -167,6 +167,29 @@ class Projects {
     const output = chp.execSync(`npm test`, { cwd: projectPath, stdio: 'pipe' });
     return `NPM test completed:\n${output.toString()}`;
   }
+
+  /**
+   * Installs a module in the specified project.
+   *
+   * @param {string} project - The name of the project.
+   * @param {string} module - The name of the module to install.
+   * @param {string} development - "true" if it's a dev dependency, "false" otherwise.
+   * @returns {string} A message indicating the installation status.
+   * @example projects.install('my-project', 'some-module', 'false')
+   */
+  install(project, module, development) {
+    const projectPath = this.home.subpath(project);
+    const devFlag = development === 'true' ? '--save-dev' : '';
+    const command = `npm install ${module} ${devFlag}`;
+    try {
+      chp.execSync(command, { cwd: projectPath, stdio: 'pipe' });
+      chp.execSync(`git -C ${projectPath} add package.json package-lock.json`);
+      chp.execSync(`git -C ${projectPath} commit --author "${this.author}" -m "Installed ${module} by Phantomaton"`);
+      return `Module ${module} installed successfully.`;
+    } catch (error) {
+      return `Error installing module ${module}: ${error.message}`;
+    }
+  }
 }
 
 export default Projects;
