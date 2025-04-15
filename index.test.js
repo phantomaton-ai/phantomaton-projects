@@ -66,6 +66,18 @@ const EXPECTED = [
     //execute: ({ project }) => api.test(project),
     example: { attributes: { project: 'my-project' } },
     description: 'Runs tests for the specified project.'
+  },
+  {
+    name: 'install',
+    validate: ({ project, module, development }) =>
+      typeof project === 'string' &&
+      typeof module === 'string' &&
+      (development === 'true' || development === 'false'),
+    //execute: ({ project, module, development }) => api.install(project, module, development),
+    example: {
+      attributes: { project: 'my-project', module: 'some-module', development: 'false' },
+    },
+    description: 'Installs a module in the specified project.'
   }
 ];
 
