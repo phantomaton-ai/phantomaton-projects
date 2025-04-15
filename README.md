@@ -78,31 +78,6 @@ Example configuration:
 ```
 Refer to the main [Phantomaton](https://github.com/phantomaton-ai/phantomaton#configuration-) documentation for more details on the configuration system.
 
-## Usage Example (Integration) ⚙️
-
-This module typically provides its commands via a command provider integrated using [phantomaton-plugins](https://github.com/phantomaton-ai/phantomaton-plugins) and [phantomaton-execution](https://github.com/phantomaton-ai/phantomaton-execution).
-
-```javascript
-// Simplified example within a Phantomaton plugin setup
-import projects from 'phantomaton-projects';
-import execution from 'phantomaton-execution';
-import plugins from 'phantomaton-plugins';
-import aleister from 'aleister'; // Assumes aleister is used for command generation
-
-export default configuration => {
-  // Instantiate the Projects class with potentially custom config
-  const { commands: projectCommands } = aleister(projects)(configuration);
-
-  // Provide the generated commands to the execution system
-  return plugins.create([
-    execution.command.provider([], () => projectCommands)
-  ]);
-};
-
-// The Phantomaton instance can now execute this plugin's commands
-// when they appear in processed text, using the configured 'home' path.
-```
-
 ## Contributing 🤝
 
 Contributions are welcome! Please adhere to the project's code style and submit pull requests to the [Phantomaton Projects GitHub repository](https://github.com/phantomaton-ai/phantomaton-projects).
