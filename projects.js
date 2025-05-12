@@ -58,7 +58,9 @@ class Projects {
     const projectPath = this.home.subpath(project);
     fs.mkdirSync(projectPath, { recursive: true });
     fs.cpSync(this.template, projectPath, { recursive: true });
-    fs.cpSync(path.join(this.template, '.gitignore'), projectPath);
+    const gitignore = path.join(projectPath, 'gitignore');
+    const dotgitignore = path.join(projectPath, '.gitignore');
+    fs.renameSync(gitignore, dotgitignore);
     const packagePath = path.join(projectPath, 'package.json');
     const packageJson = fs.readFileSync(packagePath, 'utf-8');
     const { author, repositories } = this;
