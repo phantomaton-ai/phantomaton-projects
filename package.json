@@ -1,6 +1,6 @@
 {
   "name": "phantomaton-projects",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "main": "index.js",
   "scripts": {
     "all": "lovecraft -a",
